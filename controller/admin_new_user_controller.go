@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (controller *AdminController) NewUser(c *gin.Context) {
+func (controller *UserController) NewUser(c *gin.Context) {
 	admin, err := controller.UserService.GetAdminByID(c.Keys["user_id"].(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.GenerateResponse(false, "error while fetching admin", nil))

@@ -21,7 +21,7 @@ type UsersListResponse struct {
 	Total    int64       `json:"total"`
 }
 
-func (controller *AdminController) Users(c *gin.Context) {
+func (controller *UserController) Users(c *gin.Context) {
 	// Get page and page size from query parameters, with default values
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))

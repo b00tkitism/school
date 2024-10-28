@@ -35,7 +35,7 @@ func (repo *MessageRepository) MarkMessageAsRead(userID, messageID uint) error {
 }
 
 // GetMessagesWithStatus retrieves messages along with read status for a specific user
-func (repo *MessageRepository) GetMessagesWithStatus(userID uint) ([]models.MessageWithStatus, error) {
+func (repo *MessageRepository) GetMessagesWithStatus(userID uint, limit, offset int) ([]models.MessageWithStatus, error) {
 	var messages []models.MessageWithStatus
 
 	// Retrieve messages with read status for the specified user
@@ -43,7 +43,16 @@ func (repo *MessageRepository) GetMessagesWithStatus(userID uint) ([]models.Mess
 		Select("messages.id, messages.sender_id, messages.content, messages.is_broadcast, COALESCE(ms.is_read, false) AS is_read, COALESCE(ms.read_at, null) AS read_at").
 		Joins("LEFT JOIN message_statuses AS ms ON ms.message_id = messages.id AND ms.user_id = ?", userID).
 		Where("messages.recipient_id = ? OR messages.is_broadcast = ?", userID, true).
+		Order("messages.created_at DESC").
+		Limit(limit).
+		Offset(offset).
 		Scan(&messages).Error
 
 	return messages, err
+}
+
+func (repo *MessageRepository) GetMessagesCount(userID uint) (int64, error) {
+	var count int64
+	err := repo.DB.Model(&models.Message{}).Where("recipient_id = ? OR is_broadcast = ?", userID, true).Count(&count).Error
+	return count, err
 }

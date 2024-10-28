@@ -13,7 +13,7 @@ type AdminSendMessageRequest struct {
 	Message     string `json:"message"`
 }
 
-func (controller *AdminController) SendMessage(c *gin.Context) {
+func (controller *UserController) SendMessage(c *gin.Context) {
 	admin, err := controller.UserService.GetAdminByID(c.Keys["user_id"].(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.GenerateResponse(false, "error while fetching admin", nil))

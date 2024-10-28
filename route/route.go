@@ -16,7 +16,7 @@ func InitRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	v1.Use(middleware.JWTMiddleware())
 	{
-		adminController := controller.AdminController{
+		userController := controller.UserController{
 			UserService: &service.UserService{
 				Repo: &repository.UserRepository{
 					DB: db.DB,
@@ -34,13 +34,15 @@ func InitRoutes(router *gin.Engine) {
 			},
 		}
 
-		v1.POST("/admin/login", adminController.Login)
-		v1.POST("/admin/users", adminController.NewUser)
-		v1.POST("/admin/send-message", adminController.SendMessage)
+		v1.POST("/admin/login", userController.AdminLogin)
+		v1.POST("/admin/users", userController.NewUser)
+		v1.POST("/admin/send-message", userController.SendMessage)
 
-		v1.GET("/admin/users", adminController.Users)
+		v1.GET("/admin/users", userController.Users)
 
-		v1.POST("/user/login")
-		v1.GET("/user/messages")
+		v1.POST("/user/login", userController.Login)
+		v1.POST("/user/messages", userController.ReadMessage)
+		v1.GET("/user/messages", userController.GetMessages)
+
 	}
 }

@@ -14,6 +14,10 @@ func (service *UserService) GetAdmin(username, password string) (*models.Users, 
 	return service.Repo.GetAdmin(username, util.EncodeMD5(password))
 }
 
+func (service *UserService) GetUser(username, password string) (*models.Users, error) {
+	return service.Repo.GetUser(username, util.EncodeMD5(password))
+}
+
 func (service *UserService) GetAdminByID(userID uint) (*models.Users, error) {
 	return service.Repo.GetAdminByID(userID)
 }

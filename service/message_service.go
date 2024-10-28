@@ -21,6 +21,14 @@ func (service *MessageService) MarkMessageAsRead(userID, messageID uint) error {
 }
 
 // GetMessagesWithStatus retrieves messages with read status for a specific user
-func (service *MessageService) GetMessagesWithStatus(userID uint) ([]models.MessageWithStatus, error) {
-	return service.Repo.GetMessagesWithStatus(userID)
+func (service *MessageService) GetMessagesWithStatus(userID uint, page, pageSize int) ([]models.MessageWithStatus, error) {
+	// Calculate offset based on page and pageSize
+	offset := (page - 1) * pageSize
+
+	// Retrieve messages from the repository
+	return service.Repo.GetMessagesWithStatus(userID, pageSize, offset)
+}
+
+func (service *MessageService) GetMessagesCount(userID uint) (int64, error) {
+	return service.Repo.GetMessagesCount(userID)
 }

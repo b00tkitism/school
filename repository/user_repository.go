@@ -19,6 +19,15 @@ func (repo *UserRepository) GetAdmin(username, password string) (*models.Users, 
 	return admin, nil
 }
 
+func (repo *UserRepository) GetUser(username, password string) (*models.Users, error) {
+	var admin *models.Users
+	err := repo.DB.Model(&models.Users{}).Where("username = ?", username).Where("password = ?", password).Where("is_admin = ?", false).Find(&admin).Error
+	if err != nil {
+		return nil, err
+	}
+	return admin, nil
+}
+
 func (repo *UserRepository) GetAdminByID(userID uint) (*models.Users, error) {
 	var admin *models.Users
 	err := repo.DB.Model(&models.Users{}).Where("id = ?", userID).Where("is_admin = ?", true).Find(&admin).Error

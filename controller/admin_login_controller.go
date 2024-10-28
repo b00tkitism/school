@@ -20,7 +20,7 @@ type AdminResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-func (controller *AdminController) Login(c *gin.Context) {
+func (controller *UserController) AdminLogin(c *gin.Context) {
 	var adminRequest AdminRequest
 	c.BindJSON(&adminRequest)
 
