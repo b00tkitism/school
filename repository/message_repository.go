@@ -31,7 +31,7 @@ func (repo *MessageRepository) MarkMessageAsRead(userID, messageID uint) error {
 		IsRead:    true,
 		ReadAt:    time.Now(),
 	}
-	return repo.DB.Save(&status).Error
+	return repo.DB.Where("user_id = ?", userID).Where("message_id = ?", messageID).Save(&status).Error
 }
 
 // GetMessagesWithStatus retrieves messages along with read status for a specific user
