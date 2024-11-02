@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"school/models"
 	"school/repository"
 	"school/util"
@@ -18,8 +19,26 @@ func (service *UserService) GetUser(username, password string) (*models.Users, e
 	return service.Repo.GetUser(username, util.EncodeMD5(password))
 }
 
+func (service *UserService) GetUserByID(userID uint) (*models.Users, error) {
+	return service.Repo.GetUserByID(userID)
+}
+
 func (service *UserService) GetAdminByID(userID uint) (*models.Users, error) {
 	return service.Repo.GetAdminByID(userID)
+}
+
+func (service *UserService) GetPermissionsByID(userID uint) ([]models.Permission, error) {
+	return service.Repo.GetPermissionsByID(userID)
+}
+
+func (service *UserService) UserHasPermission(userID uint, permissionID uint) (bool, error) {
+	permissions, err := service.GetPermissionsByID(userID)
+	for _, v := range permissions {
+		if permissionID == v.ID {
+			return true, nil
+		}
+	}
+	return false, err
 }
 
 func (service *UserService) UserExists(username string) (bool, error) {
@@ -29,6 +48,24 @@ func (service *UserService) UserExists(username string) (bool, error) {
 func (service *UserService) NewUser(user models.Users) error {
 	user.Password = util.EncodeMD5(user.Password)
 	return service.Repo.NewUser(user)
+}
+
+func (service *UserService) DeleteUser(userID uint) error {
+	return service.Repo.DeleteUser(userID)
+}
+
+func (service *UserService) ModifyUser(userID uint, username, password, fullName, phoneNumber, idCode string, gender, isAdmin *bool) error {
+	// Ensure the user exists before attempting to modify
+	exists, err := service.Repo.UserExistsByID(userID)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		return errors.New("user not found")
+	}
+
+	return service.Repo.UpdateUser(userID, username, password, fullName, phoneNumber, idCode, gender, isAdmin)
 }
 
 func (s *UserService) GetUsersCount() (int64, error) {

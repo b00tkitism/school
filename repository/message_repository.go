@@ -40,7 +40,7 @@ func (repo *MessageRepository) GetMessagesWithStatus(userID uint, limit, offset 
 
 	// Retrieve messages with read status for the specified user
 	err := repo.DB.Model(&models.Message{}).
-		Select("messages.id, messages.sender_id, messages.content, messages.is_broadcast, COALESCE(ms.is_read, false) AS is_read, COALESCE(ms.read_at, null) AS read_at").
+		Select("messages.id, messages.sender_id, messages.content, messages.is_broadcast, messages.title, messages.created_at, COALESCE(ms.is_read, false) AS is_read, COALESCE(ms.read_at, null) AS read_at").
 		Joins("LEFT JOIN message_statuses AS ms ON ms.message_id = messages.id AND ms.user_id = ?", userID).
 		Where("messages.recipient_id = ? OR messages.is_broadcast = ?", userID, true).
 		Order("messages.created_at DESC").

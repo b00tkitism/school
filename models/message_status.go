@@ -17,8 +17,10 @@ type MessageStatus struct {
 type MessageWithStatus struct {
 	ID          uint       `json:"id"`
 	SenderID    uint       `json:"sender_id"`
+	Title       string     `json:"title"`
 	Content     string     `json:"content"`
 	IsBroadcast bool       `json:"is_broadcast"`
 	IsRead      bool       `json:"is_read"`
 	ReadAt      *time.Time `json:"read_at,omitempty"`
+	CreatedAt   *time.Time `json:"send_time"`
 }
