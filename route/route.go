@@ -56,6 +56,7 @@ func InitRoutes(router *gin.Engine) {
 		v1.POST("/user/login", userController.Login)
 		v1.GET("/user/messages", messageController.GetMessages)  // Moved to MessageController
 		v1.POST("/user/messages", messageController.ReadMessage) // Moved to MessageController
+		// v1.PATCH("/user/password", userController.ChangePassword)
 
 		// Admin Authentication and Messaging (AdminController)
 		v1.POST("/admin/login", userController.AdminLogin)
@@ -76,9 +77,9 @@ func InitRoutes(router *gin.Engine) {
 		v1.PATCH("/admin/groups/:id", groupController.UpdateGroup)
 
 		// Assigning Permissions to Groups (PermissionGroupController)
-		// v1.POST("/admin/groups/:id/permissions", groupController.AssignPermissionToGroup)
-		// v1.GET("/admin/groups/:id/permissions", groupController.ListGroupPermissions)
-		// v1.DELETE("/admin/groups/:id/permissions/:permission_id", groupController.RemovePermissionFromGroup)
+		v1.POST("/admin/groups/:id/permissions", groupController.AssignPermissionsToGroup)
+		v1.GET("/admin/groups/:id/permissions", groupController.ListGroupPermissions)
+		v1.DELETE("/admin/groups/:id/permissions/:permission_id", groupController.RemovePermissionsFromGroup)
 
 		// Assigning Users to Groups (GroupController)
 		// v1.POST("/admin/groups/:id/users", groupController.AssignUserToGroup)

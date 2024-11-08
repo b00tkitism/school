@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"school/models"
 
 	"gorm.io/gorm"
@@ -97,24 +98,39 @@ func (repo *UserRepository) DeleteUser(userID uint) error {
 	return repo.DB.Model(&models.Users{}).Where("id = ?", userID).Error
 }
 
-func (repo *UserRepository) UpdateUser(userID uint, username, password, fullName, phoneNumber, idCode string, gender, isAdmin *bool) error {
-	// Prepare a map with non-nil fields to be updated
-	updates := map[string]interface{}{}
-	if username != "" {
-		updates["username"] = username
+func (repo *UserRepository) UpdateUser(userID uint, username, password, fullName, phoneNumber, idCode *string, gender, isAdmin *bool) error {
+	updateData := models.Users{}
+
+	if username != nil {
+		updateData.Username = *username
 	}
-	if fullName != "" {
-		updates["full_name"] = fullName
+	if password != nil {
+		updateData.Password = *password
 	}
-	if phoneNumber != "" {
-		updates["phone_number"] = phoneNumber
+	if fullName != nil {
+		updateData.FullName = *fullName
+	}
+	if phoneNumber != nil {
+		updateData.PhoneNumber = *phoneNumber
+	}
+	if idCode != nil {
+		updateData.IDCode = *idCode
+	}
+	if gender != nil {
+		updateData.Gender = *gender
 	}
 	if isAdmin != nil {
-		updates["is_admin"] = *isAdmin
+		updateData.IsAdmin = *isAdmin
 	}
 
-	// Perform the update
-	return repo.DB.Model(&models.Users{}).Where("id = ?", userID).Updates(updates).Error
+	// Use Select to only update fields that are non-nil
+	tx := repo.DB.Model(&models.Users{}).Where("id = ?", userID).Updates(updateData)
+
+	if err := tx.Error; err != nil {
+		return fmt.Errorf("failed to update user %d: %w", userID, err)
+	}
+
+	return nil
 }
 
 func (repo *UserRepository) GetUsersCount() (int64, error) {

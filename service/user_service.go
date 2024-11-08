@@ -55,7 +55,6 @@ func (service *UserService) DeleteUser(userID uint) error {
 }
 
 func (service *UserService) ModifyUser(userID uint, username, password, fullName, phoneNumber, idCode string, gender, isAdmin *bool) error {
-	// Ensure the user exists before attempting to modify
 	exists, err := service.Repo.UserExistsByID(userID)
 	if err != nil {
 		return err
@@ -65,7 +64,8 @@ func (service *UserService) ModifyUser(userID uint, username, password, fullName
 		return errors.New("user not found")
 	}
 
-	return service.Repo.UpdateUser(userID, username, password, fullName, phoneNumber, idCode, gender, isAdmin)
+	hashedPassword := util.EncodeMD5(password)
+	return service.Repo.UpdateUser(userID, &username, &hashedPassword, &fullName, &phoneNumber, &idCode, gender, isAdmin)
 }
 
 func (s *UserService) GetUsersCount() (int64, error) {

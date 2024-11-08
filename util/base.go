@@ -16,3 +16,12 @@ func IsArrayContains(array []string, wanted string) bool {
 	}
 	return false
 }
+
+func IsUintArrayContains(array []uint, wanted uint) bool {
+	for _, v := range array {
+		if v == wanted {
+			return true
+		}
+	}
+	return false
+}

@@ -55,13 +55,46 @@ func (repo *GroupRepository) GetGroup(id uint) (models.Group, error) {
 }
 
 func (repo *GroupRepository) UpdateGroup(id uint, name, description string) error {
-	updates := map[string]interface{}{}
+	updates := models.Group{}
+
+	// Apply updates conditionally
 	if name != "" {
-		updates["name"] = name
+		updates.GroupName = name
 	}
 	if description != "" {
-		updates["description"] = description
+		updates.Description = description
 	}
 
-	return repo.DB.Model(&models.Users{}).Where("id = ?", id).Updates(updates).Error
+	return repo.DB.Model(&models.Group{}).Where("id = ?", id).Updates(updates).Error
+}
+
+func (repo *GroupRepository) GroupHasPermission(groupID, permissionID uint) (bool, error) {
+	gPermission := models.GroupPermission{
+		GroupID:      groupID,
+		PermissionID: permissionID,
+	}
+
+	var count int64
+	err := repo.DB.Model(&models.GroupPermission{}).Where(gPermission).Find(&gPermission).Count(&count).Error
+	return count >= 1, err
+}
+
+func (repo *GroupRepository) AssignPermissionToGroup(groupID, permissionID uint) error {
+	gPermission := models.GroupPermission{
+		GroupID:      groupID,
+		PermissionID: permissionID,
+	}
+
+	err := repo.DB.Model(&models.GroupPermission{}).Create(&gPermission).Error
+	return err
+}
+
+func (repo *GroupRepository) RemovePermissionFromGroup(groupID, permissionID uint) error {
+	gPermission := models.GroupPermission{
+		GroupID:      groupID,
+		PermissionID: permissionID,
+	}
+
+	err := repo.DB.Model(&models.GroupPermission{}).Where(gPermission).Delete(&models.GroupPermission{}).Error
+	return err
 }

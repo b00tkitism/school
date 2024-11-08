@@ -10,4 +10,11 @@ var AccessGroupInformationPermission uint = 7
 var ModifyGroupPermission uint = 8
 var DeleteGroupPermission uint = 9
 var AssignPermissionToGroupPermission uint = 10
-var RemovePermissionToGroupPermission uint = 11
+var RemovePermissionFromGroupPermission uint = 11
+
+var ValidPermissions []uint = []uint{
+	CreateUserPermission, ModifyUserPermission, DeleteUserPermission,
+	SendMessagePermission, AccessUserInformation, CreateGroupPermission,
+	AccessGroupInformationPermission, ModifyGroupPermission, DeleteGroupPermission,
+	AssignPermissionToGroupPermission, RemovePermissionFromGroupPermission,
+}
