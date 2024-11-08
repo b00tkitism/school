@@ -21,7 +21,7 @@ func (controller *GroupController) DeleteGroup(c *gin.Context) {
 		return
 	}
 
-	groupID, err := strconv.ParseUint(c.Param("group_id"), 10, 32)
+	groupID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, util.GenerateResponse(false, "invalid group_id", nil))
 		return

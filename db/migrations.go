@@ -10,5 +10,5 @@ func RunMigrations() {
 	DB.AutoMigrate(&models.Group{})
 	DB.AutoMigrate(&models.Permission{})
 	DB.AutoMigrate(&models.UserGroups{})
-	DB.AutoMigrate(&models.UserPermissions{})
+	DB.AutoMigrate(&models.UserPermissionOverride{})
 }

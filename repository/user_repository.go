@@ -50,20 +50,27 @@ func (repo *UserRepository) GetAdminByID(userID uint) (*models.Users, error) {
 func (repo *UserRepository) GetPermissionsByID(userID uint) ([]models.Permission, error) {
 	var permissions []models.Permission
 
+	// SQL query to fetch permissions from group and handle overrides
 	err := repo.DB.Raw(`
-        SELECT DISTINCT p.id, p.name, p.description
-        FROM permissions p
-        LEFT JOIN group_permissions gp ON p.id = gp.permission_id
-        LEFT JOIN user_groups ug ON gp.group_id = ug.group_id
-        WHERE ug.user_id = ?
+        WITH GroupPermissions AS (
+            SELECT DISTINCT p.id, p.name, p.description
+            FROM permissions p
+            LEFT JOIN group_permissions gp ON p.id = gp.permission_id
+            LEFT JOIN user_groups ug ON gp.group_id = ug.group_id
+            WHERE ug.user_id = ?
+        )
+        SELECT DISTINCT gp.id, gp.name, gp.description
+        FROM GroupPermissions gp
+        LEFT JOIN user_permission_overrides upo ON gp.id = upo.permission_id AND upo.user_id = ?
+        WHERE (upo.override IS NULL OR upo.override = TRUE)
         
         UNION
         
-        SELECT DISTINCT p.id, p.permission_name, p.description
+        SELECT DISTINCT p.id, p.name, p.description
         FROM permissions p
-        LEFT JOIN user_permissions up ON p.id = up.permission_id
-        WHERE up.user_id = ?
-    `, userID, userID).Scan(&permissions).Error
+        INNER JOIN user_permission_overrides upo ON p.id = upo.permission_id
+        WHERE upo.user_id = ? AND upo.override = TRUE
+    `, userID, userID, userID).Scan(&permissions).Error
 
 	if err != nil {
 		return nil, err
