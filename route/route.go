@@ -1,6 +1,7 @@
 package route
 
 import (
+	"school/controller/group"
 	"school/controller/message"
 	"school/controller/user"
 	"school/db"
@@ -41,6 +42,14 @@ func InitRoutes(router *gin.Engine) {
 			MessageService: messageService,
 		}
 
+		groupController := group.GroupController{
+			GroupService: &service.GroupService{
+				Repo: &repository.GroupRepository{
+					DB: db.DB,
+				},
+			},
+		}
+
 		// User Authentication and Account Management (UserController)
 		v1.POST("/user/login", userController.Login)
 		v1.GET("/user/messages", messageController.GetMessages)  // Moved to MessageController
@@ -57,23 +66,16 @@ func InitRoutes(router *gin.Engine) {
 		v1.DELETE("/admin/users/:id", userController.DeleteUser) // Delete a specific user
 		v1.PATCH("/admin/users/:id", userController.ModifyUser)  // Update a specific user
 
-		// Permission Group Management (PermissionGroupController)
-		// v1.POST("/admin/permission-groups", permissionGroupController.CreatePermissionGroup)
-		// v1.GET("/admin/permission-groups", permissionGroupController.ListPermissionGroups)
-		// v1.GET("/admin/permission-groups/:id", permissionGroupController.GetPermissionGroup)
-		// v1.DELETE("/admin/permission-groups/:id", permissionGroupController.DeletePermissionGroup)
-		// v1.PATCH("/admin/permission-groups/:id", permissionGroupController.UpdatePermissionGroup)
-
-		// Assigning Permissions to Permission Groups (PermissionGroupController)
-		// v1.POST("/admin/permission-groups/:id/permissions", permissionGroupController.AssignPermissionToGroup)
-		// v1.DELETE("/admin/permission-groups/:id/permissions/:permission_id", permissionGroupController.RemovePermissionFromGroup)
-
 		// Group Management (GroupController)
-		// v1.POST("/admin/groups", groupController.CreateGroup)
+		v1.POST("/admin/groups", groupController.CreateGroup)
 		// v1.GET("/admin/groups", groupController.ListGroups)
 		// v1.GET("/admin/groups/:id", groupController.GetGroup)
 		// v1.DELETE("/admin/groups/:id", groupController.DeleteGroup)
 		// v1.PATCH("/admin/groups/:id", groupController.UpdateGroup)
+
+		// Assigning Permissions to Groups (PermissionGroupController)
+		// v1.POST("/admin/groups/:id/permissions", groupController.AssignPermissionToGroup)
+		// v1.DELETE("/admin/groups/:id/permissions/:permission_id", groupController.RemovePermissionFromGroup)
 
 		// Assigning Users to Groups (GroupController)
 		// v1.POST("/admin/groups/:id/users", groupController.AssignUserToGroup)
