@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type PermissionGroup struct {
+type GroupPermission struct {
 	*gorm.Model
 	GroupID      uint
 	PermissionID uint
