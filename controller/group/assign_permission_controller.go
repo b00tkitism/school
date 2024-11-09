@@ -52,5 +52,4 @@ func (controller *GroupController) AssignPermissionsToGroup(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.GenerateResponse(true, "permissions assigned", nil))
-	return
 }

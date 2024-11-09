@@ -52,5 +52,4 @@ func (controller *GroupController) RemovePermissionsFromGroup(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.GenerateResponse(true, "permissions removed", nil))
-	return
 }

@@ -22,7 +22,7 @@ func (repo *UserRepository) GetAdmin(username, password string) (*models.Users, 
 
 func (repo *UserRepository) GetUser(username, password string) (*models.Users, error) {
 	var admin *models.Users
-	err := repo.DB.Model(&models.Users{}).Where("username = ?", username).Where("password = ?", password).Where("is_admin = ?", false).Find(&admin).Error
+	err := repo.DB.Model(&models.Users{}).Where("username = ?", username).Where("password = ?", password).Find(&admin).Error
 	if err != nil {
 		return nil, err
 	}

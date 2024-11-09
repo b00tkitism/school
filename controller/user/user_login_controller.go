@@ -16,6 +16,7 @@ type LoginRequest struct {
 type LoginResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
+	IsAdmin      bool   `json:"is_admin"`
 }
 
 func (controller *UserController) Login(c *gin.Context) {
@@ -62,5 +63,6 @@ func (controller *UserController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, util.GenerateResponse(true, "login succeed", LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+		IsAdmin: user.IsAdmin
 	}))
 }
