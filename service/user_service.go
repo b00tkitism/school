@@ -45,6 +45,10 @@ func (service *UserService) UserExists(username string) (bool, error) {
 	return service.Repo.UserExists(username)
 }
 
+func (service *UserService) UserExistsByID(userID uint) (bool, error) {
+	return service.Repo.UserExistsByID(userID)
+}
+
 func (service *UserService) NewUser(user models.Users) error {
 	user.Password = util.EncodeMD5(user.Password)
 	return service.Repo.NewUser(user)

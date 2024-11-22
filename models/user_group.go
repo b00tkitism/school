@@ -2,8 +2,10 @@ package models
 
 import "gorm.io/gorm"
 
-type UserGroups struct {
+type UserGroup struct {
 	*gorm.Model
-	UserID  uint
-	GroupID uint
+	UserID  uint  `gorm:"index"`
+	GroupID uint  `gorm:"index"`
+	User    Users `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Group   Group `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE"`
 }

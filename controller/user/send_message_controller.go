@@ -9,9 +9,10 @@ import (
 )
 
 type AdminSendMessageRequest struct {
-	RecipientID uint   `json:"recipient_id"`
-	Title       string `json:"title"`
-	Message     string `json:"message"`
+	RecipientID   uint   `json:"recipient_id"`
+	RecipientType uint8  `json:"recipient_type"`
+	Title         string `json:"title"`
+	Message       string `json:"message"`
 }
 
 func (controller *UserController) SendMessage(c *gin.Context) {

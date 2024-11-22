@@ -61,15 +61,15 @@ func (repo *UserRepository) GetPermissionsByID(userID uint) ([]models.Permission
         )
         SELECT DISTINCT gp.id, gp.name, gp.description
         FROM GroupPermissions gp
-        LEFT JOIN user_permission_overrides upo ON gp.id = upo.permission_id AND upo.user_id = ?
-        WHERE (upo.override IS NULL OR upo.override = TRUE)
+        LEFT JOIN user_permissions upo ON gp.id = upo.permission_id AND upo.user_id = ?
+        WHERE (upo.is_granted IS NULL OR upo.is_granted = TRUE)
         
         UNION
         
         SELECT DISTINCT p.id, p.name, p.description
         FROM permissions p
-        INNER JOIN user_permission_overrides upo ON p.id = upo.permission_id
-        WHERE upo.user_id = ? AND upo.override = TRUE
+        INNER JOIN user_permissions upo ON p.id = upo.permission_id
+        WHERE upo.user_id = ? AND upo.is_granted = TRUE
     `, userID, userID, userID).Scan(&permissions).Error
 
 	if err != nil {
@@ -102,7 +102,7 @@ func (repo *UserRepository) NewUser(user models.Users) error {
 }
 
 func (repo *UserRepository) DeleteUser(userID uint) error {
-	return repo.DB.Model(&models.Users{}).Where("id = ?", userID).Error
+	return repo.DB.Model(&models.Users{}).Where("id = ?", userID).Delete(userID).Error
 }
 
 func (repo *UserRepository) UpdateUser(userID uint, username, password, fullName, phoneNumber, idCode *string, gender, isAdmin *bool) error {

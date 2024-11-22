@@ -8,7 +8,8 @@ func RunMigrations() {
 	DB.AutoMigrate(&models.Message{})
 	DB.AutoMigrate(&models.MessageStatus{})
 	DB.AutoMigrate(&models.Group{})
+	DB.AutoMigrate(&models.GroupPermission{})
 	DB.AutoMigrate(&models.Permission{})
-	DB.AutoMigrate(&models.UserGroups{})
-	DB.AutoMigrate(&models.UserPermissionOverride{})
+	DB.AutoMigrate(&models.UserGroup{})
+	DB.AutoMigrate(&models.UserPermission{})
 }

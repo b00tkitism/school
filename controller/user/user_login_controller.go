@@ -63,6 +63,6 @@ func (controller *UserController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, util.GenerateResponse(true, "login succeed", LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
-		IsAdmin: user.IsAdmin
+		IsAdmin:      user.IsAdmin,
 	}))
 }

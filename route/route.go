@@ -83,10 +83,11 @@ func InitRoutes(router *gin.Engine) {
 
 		// Assigning Users to Groups (GroupController)
 		v1.POST("/admin/groups/:id/users", groupController.AssignUserToGroup)
+		v1.GET("/admin/groups/:id/users", groupController.ListUsersInGroup)
 		v1.DELETE("/admin/groups/:id/users/:user_id", groupController.RemoveUserFromGroup)
 
 		// // Assigning Permissions Directly to Users (UserController)
-		v1.POST("/admin/users/:id/permissions", userController.AssignPermissionsToUser)
-		v1.DELETE("/admin/users/:id/permissions", userController.RemovePermissionsFromUser)
+		// v1.POST("/admin/users/:id/permissions", userController.AssignPermissionsToUser)
+		// v1.DELETE("/admin/users/:id/permissions", userController.RemovePermissionsFromUser)
 	}
 }
