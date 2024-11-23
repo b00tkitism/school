@@ -42,6 +42,12 @@ func (controller *GroupController) AssignPermissionsToGroup(c *gin.Context) {
 		return
 	}
 
+	u, _ := controller.GroupService.IsGroupAdminOnly(uint(groupID))
+	if !u {
+		c.JSON(http.StatusBadRequest, util.GenerateResponse(false, "group is for users only not admins", nil))
+		return
+	}
+
 	var request AssignPermissionsRequest
 	c.BindJSON(&request)
 

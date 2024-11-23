@@ -108,7 +108,7 @@ func (repo *GroupRepository) RemovePermissionFromGroup(groupID, permissionID uin
 func (repo *GroupRepository) GetPermissionsByGroupID(groupID uint) ([]models.Permission, error) {
 	var permissions []models.Permission
 
-	err := repo.DB.Table("group_permissions").
+	err := repo.DB.Model(&models.GroupPermission{}).Table("group_permissions").
 		Select("permissions.id, permissions.name, permissions.description").
 		Joins("JOIN permissions ON group_permissions.permission_id = permissions.id").
 		Where("group_permissions.group_id = ?", groupID).

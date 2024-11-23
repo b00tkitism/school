@@ -28,6 +28,11 @@ func InitRoutes(router *gin.Engine) {
 				DB: db.DB,
 			},
 		}
+		groupService := &service.GroupService{
+			Repo: &repository.GroupRepository{
+				DB: db.DB,
+			},
+		}
 
 		userController := user.UserController{
 			UserService: userService,
@@ -37,6 +42,7 @@ func InitRoutes(router *gin.Engine) {
 				},
 			},
 			MessageService: messageService,
+			GroupService:   groupService,
 		}
 
 		messageController := message.MessageController{
@@ -44,19 +50,15 @@ func InitRoutes(router *gin.Engine) {
 		}
 
 		groupController := group.GroupController{
-			UserService: userService,
-			GroupService: &service.GroupService{
-				Repo: &repository.GroupRepository{
-					DB: db.DB,
-				},
-			},
+			UserService:  userService,
+			GroupService: groupService,
 		}
 
 		// User Authentication and Account Management (UserController)
 		v1.POST("/user/login", userController.Login)
 		v1.GET("/user/messages", messageController.GetMessages)  // Moved to MessageController
 		v1.POST("/user/messages", messageController.ReadMessage) // Moved to MessageController
-		// v1.PATCH("/user/password", userController.ChangePassword)
+		v1.PATCH("/user/password", userController.ChangePassword)
 
 		// Admin Authentication and Messaging (AdminController)
 		// v1.POST("/admin/login", userController.AdminLogin)

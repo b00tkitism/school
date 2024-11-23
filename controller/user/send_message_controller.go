@@ -10,7 +10,7 @@ import (
 
 type AdminSendMessageRequest struct {
 	RecipientID   uint   `json:"recipient_id"`
-	RecipientType uint8  `json:"recipient_type"`
+	RecipientType string `json:"recipient_type"`
 	Title         string `json:"title"`
 	Message       string `json:"message"`
 }
@@ -36,7 +36,14 @@ func (controller *UserController) SendMessage(c *gin.Context) {
 	}
 
 	userID := c.Keys["user_id"].(uint)
-	err = controller.MessageService.SendMessage(userID, request.RecipientID, request.Title, request.Message)
+	if request.RecipientType == "single" {
+		err = controller.MessageService.SendMessage(userID, request.RecipientID, request.Title, request.Message)
+	} else {
+		list, _ := controller.GroupService.ListUsersInGroup(request.RecipientID)
+		for _, user := range list {
+			err = controller.MessageService.SendMessage(userID, user, request.Title, request.Message)
+		}
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.GenerateResponse(false, "error while sending message", nil))
 		return
